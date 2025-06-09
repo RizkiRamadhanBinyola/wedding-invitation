@@ -2,21 +2,24 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 // Halaman depan
 Route::get('/', function () {
     return view('welcome');
 });
 
-// Dashboard admin
-Route::get('/admin/dashboard', function () {
-    return view('admin.dashboard');
-})->middleware(['auth', 'verified'])->name('admin.dashboard');
+// Dashboard tunggal berdasarkan role
+Route::get('/dashboard', function () {
+    $user = Auth::user();
 
-// Dashboard user
-Route::get('/user/dashboard', function () {
+    if ($user->role === 'admin') {
+        return view('admin.dashboard');
+    }
+
+    // Default ke dashboard user
     return view('user.dashboard');
-})->middleware(['auth', 'verified'])->name('user.dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 // Middleware auth untuk profile
 Route::middleware('auth')->group(function () {

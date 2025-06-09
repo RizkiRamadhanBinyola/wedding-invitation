@@ -19,9 +19,13 @@ $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(valu
         <!-- ===== Sidebar Start ===== -->
         <x-sidebar></x-sidebar>
         <!-- ===== Sidebar End ===== -->
-
+        
+        
         <!-- ===== Content Area Start ===== -->
         <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+            <!-- ===== Sidebar Start ===== -->
+            <x-sidebar-header></x-sidebar-header>
+            <!-- ===== Sidebar End ===== -->
             {{ $slot }}
         </div>
         <!-- ===== Content Area End ===== -->
