@@ -44,8 +44,6 @@ class ThemeController extends Controller
             $destination = $assetFolder . '/' . $fileName;
 
             $file->move($assetFolder, $fileName);
-
-            // Simpan path relatif dari folder public ke DB
             $previewPath = "assets/{$slug}/{$fileName}";
         }
 
@@ -62,15 +60,46 @@ class ThemeController extends Controller
             File::makeDirectory($viewPath, 0755, true);
         }
 
-        // Salin file template.blade.php ke folder tema
-        $templateSource = resource_path("views/admin/themes/template.blade.php");
-        $templateDestination = "{$viewPath}/index.blade.php";
-        if (File::exists($templateSource)) {
-            File::copy($templateSource, $templateDestination);
-        }
+        // ===== Buat index.blade.php dengan struktur HTML dan link CSS/JS =====
+        $indexBlade = <<<BLADE
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Undangan Pernikahan</title>
+    <link rel="stylesheet" href="{{ asset('assets/{$slug}/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Undangan Pernikahan</h1>
+
+        <p><strong>Pria:</strong> {{ \$data['nama_pria'] }}</p>
+        <p><strong>Wanita:</strong> {{ \$data['nama_wanita'] }}</p>
+        <p><strong>Tanggal Acara:</strong> {{ \$data['tanggal'] }}</p>
+        <p><strong>Lokasi:</strong> {{ \$data['lokasi'] }}</p>
+
+        <hr>
+        <p><strong>Ucapan:</strong> {{ \$data['ucapan'] }}</p>
+
+        @if(\$isDummy)
+            <p style="color:red;">[Mode Preview Dummy]</p>
+        @endif
+    </div>
+
+    <script src="{{ asset('assets/{$slug}/script.js') }}"></script>
+</body>
+</html>
+BLADE;
+
+        File::put("{$viewPath}/index.blade.php", $indexBlade);
+
+        // ===== Buat file style.css dan script.js kosong =====
+        File::put("{$assetFolder}/style.css", "/* Gaya CSS untuk tema {$slug} */");
+        File::put("{$assetFolder}/script.js", "// Script JS untuk tema {$slug}");
 
         return redirect()->route('themes.index')->with('success', 'Tema berhasil ditambahkan');
     }
+
 
 
     public function edit(Theme $theme)
@@ -86,19 +115,35 @@ class ThemeController extends Controller
             'preview' => 'nullable|image|max:2048',
         ]);
 
+        $slug = $theme->slug; // kita gunakan slug lama untuk path
+
+        // Jika ada file preview baru, hapus yang lama dan simpan yang baru
         if ($request->hasFile('preview')) {
-            $previewPath = $request->file('preview')->store('themes/previews', 'public');
-            $theme->preview = $previewPath;
+            $assetFolder = public_path("assets/{$slug}");
+
+            // Hapus file preview lama
+            if ($theme->preview && file_exists(public_path($theme->preview))) {
+                unlink(public_path($theme->preview));
+            }
+
+            // Simpan preview baru di path yang sama
+            $file = $request->file('preview');
+            $fileName = 'preview.' . $file->getClientOriginalExtension();
+            $file->move($assetFolder, $fileName);
+
+            // Perbarui path preview di database
+            $theme->preview = "assets/{$slug}/{$fileName}";
         }
 
+        // Update nama tema
         $theme->update([
             'name' => $request->name,
-            'slug' => $request->slug,
-            'preview' => $theme->preview,
+            'preview' => $theme->preview, // sudah diperbarui jika ada file baru
         ]);
 
         return redirect()->route('themes.index')->with('success', 'Tema berhasil diupdate');
     }
+
 
     public function destroy(Theme $theme)
     {

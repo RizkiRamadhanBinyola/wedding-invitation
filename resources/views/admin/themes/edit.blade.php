@@ -1,30 +1,28 @@
 <x-app-layout>
-    <div
-        class="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-        <div
-            class="border-b border-stroke px-6.5 py-4 dark:border-strokedark">
+    <div class="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+        <div class="border-b border-stroke px-6.5 py-4 dark:border-strokedark">
             <h3 class="font-medium text-black dark:text-white">
                 Edit Tema
             </h3>
         </div>
 
         @if ($errors->any())
-        <div class="bg-red-100 text-red-700 px-4 py-3 rounded mb-4">
-            <ul class="list-disc pl-5">
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
+            <div class="bg-red-100 text-red-700 px-4 py-3 rounded mb-4">
+                <ul class="list-disc pl-5">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
         @endif
 
-        <form action="{{ route('themes.update', $theme->id) }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-5.5 p-6.5">
+        <form action="{{ route('themes.update', $theme->id) }}" method="POST" enctype="multipart/form-data"
+            class="flex flex-col gap-5.5 p-6.5">
             @csrf
             @method('PUT')
 
             <div>
-                <label
-                    class="mb-3 block text-sm font-medium text-black dark:text-white">
+                <label class="mb-3 block text-sm font-medium text-black dark:text-white">
                     Nama Tema
                 </label>
                 <input type="text" name="name" value="{{ old('name', $theme->name) }}"
@@ -33,24 +31,24 @@
             </div>
 
             <div>
-                <label
-                    class="mb-3 block text-sm font-medium text-black dark:text-white">
+                <label class="mb-3 block text-sm font-medium text-black dark:text-white">
                     Slug (nama folder tema)
                 </label>
+                <input type="hidden" name="slug" value="{{ $theme->slug }}">
                 <input type="text" name="slug" value="{{ old('slug', $theme->slug) }}"
-                    class="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    placeholder="Contoh: tema-elegan" required>
+                    class="w-full rounded-lg border-[1.5px] border-stroke bg-gray-100 px-5 py-3 font-normal text-black outline-none transition dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    placeholder="Contoh: tema-elegan" disabled>
             </div>
+
 
             <div class="flex flex-col">
                 <div>
-                    <label
-                        class="mb-3 block text-sm font-medium text-black dark:text-white">
+                    <label class="mb-3 block text-sm font-medium text-black dark:text-white">
                         Preview Gambar (opsional)
                     </label>
                     @if ($theme->preview)
                         <div class="mb-4">
-                            <img src="{{ asset('storage/' . $theme->preview) }}" alt="Preview" class="w-32 rounded shadow">
+                            <img src="{{ asset($theme->preview) }}" alt="Preview Tema" width="200">
                         </div>
                     @endif
                     <input type="file" name="preview"
