@@ -21,17 +21,31 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role', // 'admin' | 'user'
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
+
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
+
+    /*  ──────────────────────── Constants ──────────────────────── */
+    public const ROLE_ADMIN = 'admin';
+    public const ROLE_USER  = 'user';
+
+    /*  ──────────────────────── Scopes ─────────────────────────── */
+    public function scopeAdmins($q)
+    {
+        return $q->where('role', self::ROLE_ADMIN);
+    }
+    public function scopeUsers($q)
+    {
+        return $q->where('role', self::ROLE_USER);
+    }
 
     public function isAdmin()
     {

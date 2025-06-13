@@ -1,37 +1,40 @@
 <?php
 
-// app/Http/Controllers/InvitationController.php
-
 namespace App\Http\Controllers;
 
 use App\Models\Invitation;
-use Illuminate\Http\Request;
 
 class InvitationController extends Controller
 {
-    public function show($slug)
+    /**
+     * Menampilkan undangan publik berdasarkan slug.
+     * URL: https://domain.com/{slug}
+     */
+    public function show(string $slug)
     {
-        $invitation = Invitation::where('slug', $slug)->with('theme')->firstOrFail();
+        // Ambil undangan plus relasi theme
+        $invitation = Invitation::with('theme')
+            ->where('slug', $slug)
+            ->firstOrFail();
 
-        $data = [
-            'nama_pria' => $invitation->nama_pria,
-            'nama_wanita' => $invitation->nama_wanita,
-            'ortu_wanita' => $invitation->ortu_wanita,
-            'ortu_pria' => $invitation->ortu_pria,
-            'anak_ke' => $invitation->anak_ke,
-            'tanggal' => $invitation->tanggal,
-            'lokasi' => $invitation->lokasi,
-            'no_telp' => $invitation->no_telp,
-            'email' => $invitation->email,
-            'waktu_akad' => $invitation->waktu_akad,
-            'waktu_resepsi' => $invitation->waktu_resepsi,
-            'no_rekening' => $invitation->no_rekening,
-            'instagram' => $invitation->instagram,
-            'musik' => $invitation->musik,
-        ];
+        // Gunakan slug tema, fallback ke 'default' jika null
+        $themeSlug = optional($invitation->theme)->slug ?? 'default';
 
-        return view("admin.themes.{$invitation->theme->slug}.index", [
-            'data' => $data,
+        // Jika kamu ingin memecah data satu‑satu:
+        $data = $invitation->only([
+            'nama_pria', 'nama_wanita',
+            'ortu_pria', 'ortu_wanita',
+            'anak_ke',  'tanggal',
+            'lokasi',   'no_telp',
+            'email',    'waktu_akad',
+            'waktu_resepsi', 'no_rekening',
+            'instagram', 'musik',
+        ]);
+
+        // Render view tema.
+        // Bila masih disimpan di /resources/views/admin/themes/<tema>/index.blade.php
+        return view("admin.themes.$themeSlug.index", [
+            'data'    => $data,
             'isDummy' => false,
         ]);
     }
