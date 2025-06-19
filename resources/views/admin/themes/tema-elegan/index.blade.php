@@ -15,7 +15,7 @@
         <p><strong>Lokasi:</strong> {{ $data['lokasi'] }}</p>
 
         <hr>
-        <p><strong>Ucapan:</strong> {{ $data['ucapan'] }}</p>
+        
 
         @if($isDummy)
             <p style="color:red;">[Mode Preview Dummy]</p>

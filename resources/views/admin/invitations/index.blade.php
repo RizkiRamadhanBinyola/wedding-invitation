@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="p-3">
         <a href="{{ route('invitations.create') }}" class="btn btn-primary mb-4">
-            + Buat Undangan
+            + Tambah Undangan
         </a>
 
         <table class="w-full table-auto text-sm">
@@ -10,6 +10,7 @@
                     <th class="px-4 py-3">Judul</th>
                     <th class="px-4 py-3">Tanggal</th>
                     <th class="px-4 py-3">Tema</th>
+                    <th class="px-4 py-3">Pembuat</th>
                     <th class="px-4 py-3">Aksi</th>
                 </tr>
             </thead>
@@ -23,6 +24,11 @@
                         {{ \Carbon\Carbon::parse($inv->tanggal)->format('d M Y') }}
                     </td>
                     <td class="border-b px-4 py-4">{{ $inv->theme->name }}</td>
+                    {{-- kolom pembuat --}}
+                    <td class="border-b px-4 py-4">
+                        <div class="font-medium">{{ $inv->user->name }}</div>
+                        <div class="text-xs text-bodydark2">{{ $inv->user->email }}</div>
+                    </td>
                     <td class="border-b px-4 py-4">
                         <a href="{{ route('invitations.edit', $inv->id) }}">✏️</a>
                         <a href="/{{ $inv->slug }}" target="_blank">👁️</a>
@@ -35,7 +41,7 @@
                     </td>
                 </tr>
             @empty
-                <tr><td colspan="4" class="py-6 text-center">Belum ada undangan.</td></tr>
+                <tr><td colspan="5" class="py-6 text-center">Belum ada undangan.</td></tr>
             @endforelse
             </tbody>
         </table>
