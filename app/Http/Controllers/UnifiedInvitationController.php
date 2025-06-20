@@ -94,15 +94,18 @@ class UnifiedInvitationController extends Controller
 
         $data = $this->validated($request);
 
-        // User biasa tidak boleh ganti pemilik
+        // User biasa tak boleh ubah pemilik
         if (Auth::user()?->role !== 'admin') {
             unset($data['user_id']);
         }
 
         $invitation->update($data);
 
-        return back()->with('success', 'Undangan diperbarui');
+        // ⬇️ redirect ke tabel
+        return redirect()->route('invitations.index')
+            ->with('success', 'Undangan berhasil diperbarui.');
     }
+
 
     /* ───────────────────────── DESTROY ─────────────────────── */
     public function destroy(Invitation $invitation)

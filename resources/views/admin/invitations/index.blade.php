@@ -8,7 +8,8 @@
             <thead>
                 <tr class="bg-gray-2 text-left dark:bg-meta-4">
                     <th class="px-4 py-3">Judul</th>
-                    <th class="px-4 py-3">Tanggal</th>
+                    {{-- ubah label kolom --}}
+                    <th class="px-4 py-3">Dibuat</th>
                     <th class="px-4 py-3">Tema</th>
                     <th class="px-4 py-3">Pembuat</th>
                     <th class="px-4 py-3">Aksi</th>
@@ -20,15 +21,19 @@
                     <td class="border-b px-4 py-4">
                         {{ $inv->nama_pria }} & {{ $inv->nama_wanita }}
                     </td>
+
+                    {{-- gunakan created_at --}}
                     <td class="border-b px-4 py-4">
-                        {{ \Carbon\Carbon::parse($inv->tanggal)->format('d M Y') }}
+                        {{ $inv->created_at->format('d M Y') }}
                     </td>
+
                     <td class="border-b px-4 py-4">{{ $inv->theme->name }}</td>
-                    {{-- kolom pembuat --}}
+
                     <td class="border-b px-4 py-4">
                         <div class="font-medium">{{ $inv->user->name }}</div>
                         <div class="text-xs text-bodydark2">{{ $inv->user->email }}</div>
                     </td>
+
                     <td class="border-b px-4 py-4">
                         <a href="{{ route('invitations.edit', $inv->id) }}">✏️</a>
                         <a href="/{{ $inv->slug }}" target="_blank">👁️</a>

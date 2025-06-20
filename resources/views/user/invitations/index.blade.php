@@ -1,42 +1,42 @@
 <x-app-layout>
-    <div class="p-3">
-        <a href="{{ route('invitations.create') }}" class="btn btn-primary mb-4">
-            + Buat Undangan
-        </a>
+    <div class="max-w-full overflow-x-auto p-3">
+        <a href="{{ route('invitations.create') }}" class="btn btn-primary mb-4">+ Buat Undangan</a>
 
-        <table class="w-full table-auto text-sm">
+        <table class="w-full table-auto">
             <thead>
                 <tr class="bg-gray-2 text-left dark:bg-meta-4">
-                    <th class="px-4 py-3">Judul</th>
-                    <th class="px-4 py-3">Tanggal</th>
-                    <th class="px-4 py-3">Tema</th>
-                    <th class="px-4 py-3">Aksi</th>
+                    <th class="min-w-[220px] px-4 py-4 font-medium">Judul</th>
+                    {{-- ganti label --}}
+                    <th class="min-w-[150px] px-4 py-4 font-medium">Dibuat</th>
+                    <th class="min-w-[120px] px-4 py-4 font-medium">Tema</th>
+                    <th class="px-4 py-4 font-medium">Aksi</th>
                 </tr>
             </thead>
             <tbody>
-            @forelse ($invitations as $inv)
-                <tr>
-                    <td class="border-b px-4 py-4">
-                        {{ $inv->nama_pria }} & {{ $inv->nama_wanita }}
-                    </td>
-                    <td class="border-b px-4 py-4">
-                        {{ \Carbon\Carbon::parse($inv->tanggal)->format('d M Y') }}
-                    </td>
-                    <td class="border-b px-4 py-4">{{ $inv->theme->name }}</td>
-                    <td class="border-b px-4 py-4">
-                        <a href="{{ route('invitations.edit', $inv->id) }}">✏️</a>
-                        <a href="/{{ $inv->slug }}" target="_blank">👁️</a>
-                        <form class="inline" method="POST"
-                              action="{{ route('invitations.destroy', $inv->id) }}"
-                              onsubmit="return confirm('Hapus?')">
-                            @csrf @method('DELETE')
-                            <button>🗑️</button>
-                        </form>
-                    </td>
-                </tr>
-            @empty
-                <tr><td colspan="4" class="py-6 text-center">Belum ada undangan.</td></tr>
-            @endforelse
+                @foreach($invitations as $inv)
+                    <tr>
+                        <td class="border-b px-4 py-5">{{ $inv->nama_pria }} &amp; {{ $inv->nama_wanita }}</td>
+
+                        {{-- tampilkan created_at --}}
+                        <td class="border-b px-4 py-5">
+                            {{ $inv->created_at->format('d M Y') }}
+                        </td>
+
+                        <td class="border-b px-4 py-5">{{ $inv->theme->name }}</td>
+
+                        <td class="border-b px-4 py-5">
+                            <div class="flex items-center space-x-3.5">
+                                <a href="{{ route('invitations.edit', $inv->id) }}">✏️</a>
+                                <a href="/{{ $inv->slug }}" target="_blank">👁️</a>
+                                <form method="POST" action="{{ route('invitations.destroy', $inv->id) }}"
+                                      onsubmit="return confirm('Yakin ingin menghapus undangan ini?')">
+                                    @csrf @method('DELETE')
+                                    <button>🗑️</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                @endforeach
             </tbody>
         </table>
 

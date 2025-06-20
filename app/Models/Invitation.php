@@ -61,4 +61,9 @@ class Invitation extends Model
     {
         return $q->where('status', self::STATUS_DRAFT);
     }
+
+    public function greetings()
+    {
+        return $this->hasMany(Greeting::class);
+    }
 }
