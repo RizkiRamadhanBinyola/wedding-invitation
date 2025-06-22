@@ -1,53 +1,83 @@
 <x-app-layout>
-    <div class="p-3">
-        <a href="{{ route('invitations.create') }}" class="btn btn-primary mb-4">
-            + Tambah Undangan
-        </a>
+    <div class="max-w-full overflow-x-auto p-3">
+        <a href="{{ route('invitations.create') }}" class="btn btn-primary mb-4">+ Tambah Undangan</a>
 
-        <table class="w-full table-auto text-sm">
+        <table class="w-full table-auto">
             <thead>
                 <tr class="bg-gray-2 text-left dark:bg-meta-4">
-                    <th class="px-4 py-3">Judul</th>
-                    {{-- ubah label kolom --}}
-                    <th class="px-4 py-3">Dibuat</th>
-                    <th class="px-4 py-3">Tema</th>
-                    <th class="px-4 py-3">Pembuat</th>
-                    <th class="px-4 py-3">Aksi</th>
+                    <th class="min-w-[220px] px-4 py-4 font-medium text-black dark:text-white xl:pl-11">
+                        Judul
+                    </th>
+                    <th class="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white">
+                        Dibuat
+                    </th>
+                    <th class="min-w-[120px] px-4 py-4 font-medium text-black dark:text-white">
+                        Tema
+                    </th>
+                    <th class="min-w-[200px] px-4 py-4 font-medium text-black dark:text-white">
+                        Pembuat
+                    </th>
+                    <th class="px-4 py-4 font-medium text-black dark:text-white">
+                        Aksi
+                    </th>
                 </tr>
             </thead>
             <tbody>
-            @forelse ($invitations as $inv)
+                @forelse ($invitations as $inv)
                 <tr>
-                    <td class="border-b px-4 py-4">
-                        {{ $inv->nama_pria }} & {{ $inv->nama_wanita }}
+                    <td class="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
+                        <h5 class="font-medium text-black dark:text-white">
+                            {{ $inv->nama_pria }} & {{ $inv->nama_wanita }}
+                        </h5>
                     </td>
-
-                    {{-- gunakan created_at --}}
-                    <td class="border-b px-4 py-4">
-                        {{ $inv->created_at->format('d M Y') }}
+                    <td class="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
+                        <p class="text-black dark:text-white">
+                            {{ $inv->created_at->format('d M Y') }}
+                        </p>
                     </td>
-
-                    <td class="border-b px-4 py-4">{{ $inv->theme->name }}</td>
-
-                    <td class="border-b px-4 py-4">
-                        <div class="font-medium">{{ $inv->user->name }}</div>
+                    <td class="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
+                        <p class="text-black dark:text-white">{{ $inv->theme->name }}</p>
+                    </td>
+                    <td class="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
+                        <div class="font-medium text-black dark:text-white">{{ $inv->user->name }}</div>
                         <div class="text-xs text-bodydark2">{{ $inv->user->email }}</div>
                     </td>
+                    <td class="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
+                        <div class="flex items-center gap-2">
+                            {{-- Edit --}}
+                            <a href="{{ route('invitations.edit', $inv->id) }}"
+                                class="inline-flex items-center justify-center gap-2.5 rounded-full border border-primary px-4 py-2 text-center font-medium text-primary hover:bg-opacity-90 lg:px-8 xl:px-10"
+                                title="Edit">
+                                ✏️<small>Edit</small>
+                            </a>
 
-                    <td class="border-b px-4 py-4">
-                        <a href="{{ route('invitations.edit', $inv->id) }}">✏️</a>
-                        <a href="/{{ $inv->slug }}" target="_blank">👁️</a>
-                        <form class="inline" method="POST"
-                              action="{{ route('invitations.destroy', $inv->id) }}"
-                              onsubmit="return confirm('Hapus?')">
-                            @csrf @method('DELETE')
-                            <button>🗑️</button>
-                        </form>
+                            {{-- Preview --}}
+                            <a href="/{{ $inv->slug }}" target="_blank"
+                                class="inline-flex items-center justify-center gap-2.5 rounded-full border border-primary px-4 py-2 text-center font-medium text-primary hover:bg-opacity-90 lg:px-8 xl:px-10"
+                                title="Preview">
+                                👁️<small>Preview</small>
+                            </a>
+
+                            {{-- Hapus --}}
+                            <form method="POST" action="{{ route('invitations.destroy', $inv->id) }}"
+                                onsubmit="return confirm('Hapus undangan ini?')"
+                                class="inline">
+                                @csrf @method('DELETE')
+                                <button type="submit"
+                                    class="inline-flex items-center justify-center gap-2.5 rounded-full border border-primary px-4 py-2 text-center font-medium text-primary hover:bg-opacity-90 lg:px-8 xl:px-10"
+                                    title="Hapus">
+                                    🗑️<small>Hapus</small>
+                                </button>
+                            </form>
+                        </div>
                     </td>
+
                 </tr>
-            @empty
-                <tr><td colspan="5" class="py-6 text-center">Belum ada undangan.</td></tr>
-            @endforelse
+                @empty
+                <tr>
+                    <td colspan="5" class="py-6 text-center">Belum ada undangan.</td>
+                </tr>
+                @endforelse
             </tbody>
         </table>
 
