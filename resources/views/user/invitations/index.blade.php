@@ -24,26 +24,20 @@
                     <td class="border-b px-4 py-5">{{ $inv->theme->name }}</td>
 
                     <td class="border-b px-4 py-5">
-                        <div class="flex items-center space-x-3.5">
-                            <a href="{{ route('invitations.edit', $inv->id) }}" class="inline-flex items-center justify-center gap-2.5 rounded-full border border-primary px-4 py-2 text-center font-medium text-primary hover:bg-opacity-90 lg:px-8 xl:px-10"
-                                title="Edit">
-                                ✏️<small>Edit</small>
+                        <div class="flex items-center gap-2">
+                            <a href="{{ route('invitations.kelola', $inv->id) }}"
+                                class="inline-flex items-center justify-center gap-2.5 rounded-full border border-primary
+                  px-4 py-2 text-primary hover:bg-opacity-90">
+                                🛠️<small>Kelola</small>
                             </a>
-                            <a href="/{{ $inv->slug }}" target="_blank" class="inline-flex items-center justify-center gap-2.5 rounded-full border border-primary px-4 py-2 text-center font-medium text-primary hover:bg-opacity-90 lg:px-8 xl:px-10"
-                                title="Preview">
+                            <a href="/{{ $inv->slug }}" target="_blank"
+                                class="inline-flex items-center justify-center gap-2.5 rounded-full border border-primary
+                  px-4 py-2 text-primary hover:bg-opacity-90">
                                 👁️<small>Preview</small>
                             </a>
-                            <form method="POST" action="{{ route('invitations.destroy', $inv->id) }}"
-                                onsubmit="return confirm('Yakin ingin menghapus undangan ini?')">
-                                @csrf @method('DELETE')
-                                <button type="submit"
-                                    class="inline-flex items-center justify-center gap-2.5 rounded-full border border-primary px-4 py-2 text-center font-medium text-primary hover:bg-opacity-90 lg:px-8 xl:px-10"
-                                    title="Hapus">
-                                    🗑️<small>Hapus</small>
-                                </button>
-                            </form>
                         </div>
                     </td>
+
                 </tr>
                 @endforeach
             </tbody>

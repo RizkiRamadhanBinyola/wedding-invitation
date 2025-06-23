@@ -1,1 +1,0 @@
-// Script JS untuk tema tema-rock

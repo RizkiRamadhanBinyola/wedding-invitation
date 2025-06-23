@@ -40,6 +40,12 @@ class Invitation extends Model
         'status',  // draft / published (optional)
     ];
 
+    protected $casts = [
+        'tanggal' => 'date',      // ⇦ tambahkan ini
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     /* ──────────────────────── Relations ───────────────────────── */
     public function user()
     {
@@ -65,5 +71,9 @@ class Invitation extends Model
     public function greetings()
     {
         return $this->hasMany(Greeting::class);
+    }
+    public function galleries()
+    {
+        return $this->hasMany(Gallery::class);
     }
 }

@@ -7,36 +7,44 @@ use Illuminate\Http\Request;
 
 class ThemePreviewController extends Controller
 {
-    // Untuk admin: pakai data dummy
-    public function previewDummy($slug)
+    /* ───────────────────  PREVIEW DUMMY untuk ADMIN  ─────────────────── */
+    public function previewDummy(string $slug)
     {
         $theme = Theme::where('slug', $slug)->firstOrFail();
 
         $data = [
-            'nama_pria' => 'Raka Aditya',
+            'nama_pria'   => 'Raka Aditya',
             'nama_wanita' => 'Salsabila Anjani',
-            'tanggal' => '2025-08-17',
-            'lokasi' => 'Hotel Grand Merdeka, Jakarta',
-            'ucapan' => 'Selamat menempuh hidup baru!',
+            'tanggal'     => '2025-08-17',
+            'lokasi'      => 'Hotel Grand Merdeka, Jakarta',
+            'ucapan'      => 'Selamat menempuh hidup baru!',
         ];
 
-        return view("admin.themes.{$slug}.index", ['data' => $data, 'isDummy' => true]);
+        return view("admin.themes.{$slug}.index", [
+            'data'    => $data,
+            'isDummy' => true,
+            'slug'    => $slug,   // ★ NEW
+        ]);
     }
 
-    // Untuk user: data diambil dari database undangan (contoh dummy saja)
-    public function previewUser($slug)
+    /* ───────────────────  PREVIEW MILIK USER (login)  ─────────────────── */
+    public function previewUser(string $slug)
     {
         $theme = Theme::where('slug', $slug)->firstOrFail();
 
-        // Ini seharusnya ambil dari tabel undangan user, contoh hardcoded
+        // seharusnya mengambil data asli dari tabel invitations …
         $data = [
-            'nama_pria' => 'Dimas Pratama',
+            'nama_pria'   => 'Dimas Pratama',
             'nama_wanita' => 'Nadya Putri',
-            'tanggal' => '2025-12-24',
-            'lokasi' => 'The Dharmawangsa, Jakarta Selatan',
-            'ucapan' => 'Semoga menjadi keluarga yang sakinah mawaddah warahmah.',
+            'tanggal'     => '2025-12-24',
+            'lokasi'      => 'The Dharmawangsa, Jakarta Selatan',
+            'ucapan'      => 'Semoga menjadi keluarga yang sakinah mawaddah warahmah.',
         ];
 
-        return view("admin.themes.{$slug}.index", ['data' => $data, 'isDummy' => false]);
+        return view("admin.themes.{$slug}.index", [
+            'data'    => $data,
+            'isDummy' => false,
+            'slug'    => $slug,   // ★ NEW
+        ]);
     }
 }

@@ -1,1 +1,1 @@
-// Script JS untuk tema tema-elegan
+// JS tema-elegan
