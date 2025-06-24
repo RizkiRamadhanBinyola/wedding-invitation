@@ -37,13 +37,21 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        // Redirect berdasarkan role
-        if (Auth::user()->role === 'admin') {
+        $user = Auth::user();
+
+        if ($user->role === 'admin') {
             return redirect()->intended('/dashboard');
+        }
+
+        // ✅ Perbaikan disini: menggunakan ->invitations()->exists()
+        if (!$user->invitations()->exists()) {
+            return redirect()->route('user.invitation.setup');
         }
 
         return redirect()->intended('/dashboard');
     }
+
+
 
     /**
      * Destroy an authenticated session.

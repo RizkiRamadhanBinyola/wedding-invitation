@@ -14,6 +14,8 @@ return Application::configure(basePath: dirname(__DIR__))
         //
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
+            'ensure.invitation.setup' => \App\Http\Middleware\EnsureInvitationIsSetup::class,
+
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
