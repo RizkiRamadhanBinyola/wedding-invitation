@@ -37,17 +37,22 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::resource('themes', ThemeController::class);
     Route::get('/themes/{slug}/preview', [ThemePreviewController::class, 'previewDummy'])->name('themes.preview');
     Route::resource('users', UserController::class);
+
+    // Admin bisa akses halaman create undangan
+    Route::get('/invitations/create', [UnifiedInvitationController::class, 'create'])->name('invitations.create');
 });
 
-/* ==================== SETUP UNDANGAN ========================= */
+/* ==================== SETUP UNDANGAN USER ==================== */
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get ('/setup-invitation', [InvitationController::class, 'showSetupForm'])   ->name('user.invitation.setup');
     Route::post('/setup-invitation', [InvitationController::class, 'submitSetupForm']) ->name('user.invitation.setup.submit');
 });
 
-/* ==================== CRUD UNDANGAN ========================== */
-Route::middleware(['auth', 'verified'])
-    ->resource('invitations', UnifiedInvitationController::class);
+/* ==================== CRUD UNDANGAN (UMUM) =================== */
+// Tanpa route create karena hanya admin yang boleh create manual
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::resource('invitations', UnifiedInvitationController::class)->except(['create']);
+});
 
 /* ================== SUB-MODULE UNDANGAN ====================== */
 Route::middleware(['auth', 'verified'])

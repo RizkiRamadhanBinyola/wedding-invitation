@@ -3,8 +3,8 @@
     @click.outside="sidebarToggle = false">
 
     @php
-        $user = Auth::user();
-        $role = $user->role ?? 'user';
+    $user = Auth::user();
+    $role = $user->role ?? 'user';
     @endphp
 
     <!-- ========== HEADER ========== -->
@@ -40,119 +40,95 @@
 
                 {{-- ========================= MENU KHUSUS ADMIN ========================= --}}
                 @if ($role === 'admin')
-                    {{-- ---------- UNDANGAN (ADMIN) ---------- --}}
-                    <li x-data="{ open: {{ request()->routeIs('invitations.*') ? 'true' : 'false' }} }">
-                        <a href="#" @click.prevent="open = !open"
-                            class="group flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium
+                {{-- ---------- UNDANGAN (ADMIN) ---------- --}}
+                <li x-data="{ open: {{ request()->routeIs('invitations.*') ? 'true' : 'false' }} }">
+                    <a href="#" @click.prevent="open = !open"
+                        class="group flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium
                       hover:bg-graydark dark:hover:bg-meta-4"
-                            :class="{ 'bg-graydark dark:bg-meta-4': open }">
-                            <i class="fa-solid fa-envelope-open-text w-4"></i>
-                            Undangan
-                            <svg class="ml-auto w-4 transition-transform" :class="{ 'rotate-180': open }"
-                                viewBox="0 0 20 20">
-                                <path fill="currentColor"
-                                    d="M4.41 6.91a1 1 0 0 1 1.18 0L10 11.32l4.41-4.41a1 1 0 1 1 1.18 1.18l-5 5a1 1 0 0 1-1.18 0l-5-5a1 1 0 0 1 0-1.18z" />
-                            </svg>
-                        </a>
-                        <div x-show="open" class="mt-4 pl-6">
-                            <ul class="flex flex-col gap-2.5">
-                                <li>
-                                    <a href="{{ route('invitations.index') }}"
-                                        class="flex items-center gap-2 px-2 py-1
+                        :class="{ 'bg-graydark dark:bg-meta-4': open }">
+                        <i class="fa-solid fa-envelope-open-text w-4"></i>
+                        Undangan
+                        <svg class="ml-auto w-4 transition-transform" :class="{ 'rotate-180': open }"
+                            viewBox="0 0 20 20">
+                            <path fill="currentColor"
+                                d="M4.41 6.91a1 1 0 0 1 1.18 0L10 11.32l4.41-4.41a1 1 0 1 1 1.18 1.18l-5 5a1 1 0 0 1-1.18 0l-5-5a1 1 0 0 1 0-1.18z" />
+                        </svg>
+                    </a>
+                    <div x-show="open" class="mt-4 pl-6">
+                        <ul class="flex flex-col gap-2.5">
+                            <li>
+                                <a href="{{ route('invitations.index') }}"
+                                    class="flex items-center gap-2 px-2 py-1
                                   {{ request()->routeIs('invitations.index') ? 'text-primary' : 'hover:text-white' }}">
-                                        <i class="fa-solid fa-list w-4"></i> Semua Undangan
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('invitations.create') }}"
-                                        class="flex items-center gap-2 px-2 py-1
+                                    <i class="fa-solid fa-list w-4"></i> Semua Undangan
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('invitations.create') }}"
+                                    class="flex items-center gap-2 px-2 py-1
                                   {{ request()->routeIs('invitations.create') ? 'text-primary' : 'hover:text-white' }}">
-                                        <i class="fa-solid fa-plus w-4"></i> Buat Undangan
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
+                                    <i class="fa-solid fa-plus w-4"></i> Buat Undangan
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
 
-                    {{-- ---------- TEMA ---------- --}}
-                    <li x-data="{ open: {{ request()->routeIs('themes.*') ? 'true' : 'false' }} }">
-                        <a href="#" @click.prevent="open = !open"
-                            class="group flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium
+                {{-- ---------- TEMA ---------- --}}
+                <li x-data="{ open: {{ request()->routeIs('themes.*') ? 'true' : 'false' }} }">
+                    <a href="#" @click.prevent="open = !open"
+                        class="group flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium
                       hover:bg-graydark dark:hover:bg-meta-4"
-                            :class="{ 'bg-graydark dark:bg-meta-4': open }">
-                            <i class="fa-solid fa-palette w-4"></i>
-                            Tema
-                            <svg class="ml-auto w-4 transition-transform" :class="{ 'rotate-180': open }"
-                                viewBox="0 0 20 20">
-                                <path fill="currentColor"
-                                    d="M4.41 6.91a1 1 0 0 1 1.18 0L10 11.32l4.41-4.41a1 1 0 1 1 1.18 1.18l-5 5a1 1 0 0 1-1.18 0l-5-5a1 1 0 0 1 0-1.18z" />
-                            </svg>
-                        </a>
-                        <div x-show="open" class="mt-4 pl-6">
-                            <ul class="flex flex-col gap-2.5">
-                                <li>
-                                    <a href="{{ route('themes.index') }}"
-                                        class="flex items-center gap-2 px-2 py-1
+                        :class="{ 'bg-graydark dark:bg-meta-4': open }">
+                        <i class="fa-solid fa-palette w-4"></i>
+                        Tema
+                        <svg class="ml-auto w-4 transition-transform" :class="{ 'rotate-180': open }"
+                            viewBox="0 0 20 20">
+                            <path fill="currentColor"
+                                d="M4.41 6.91a1 1 0 0 1 1.18 0L10 11.32l4.41-4.41a1 1 0 1 1 1.18 1.18l-5 5a1 1 0 0 1-1.18 0l-5-5a1 1 0 0 1 0-1.18z" />
+                        </svg>
+                    </a>
+                    <div x-show="open" class="mt-4 pl-6">
+                        <ul class="flex flex-col gap-2.5">
+                            <li>
+                                <a href="{{ route('themes.index') }}"
+                                    class="flex items-center gap-2 px-2 py-1
                                   {{ request()->routeIs('themes.index') ? 'text-primary' : 'hover:text-white' }}">
-                                        <i class="fa-solid fa-list w-4"></i> List Tema
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('themes.create') }}"
-                                        class="flex items-center gap-2 px-2 py-1
+                                    <i class="fa-solid fa-list w-4"></i> List Tema
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('themes.create') }}"
+                                    class="flex items-center gap-2 px-2 py-1
                                   {{ request()->routeIs('themes.create') ? 'text-primary' : 'hover:text-white' }}">
-                                        <i class="fa-solid fa-plus w-4"></i> Buat Tema
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
+                                    <i class="fa-solid fa-plus w-4"></i> Buat Tema
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
 
-                    {{-- ---------- PENGGUNA ---------- --}}
-                    <li>
-                        <a href="{{ route('users.index') }}"
-                            class="group flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium
+                {{-- ---------- PENGGUNA ---------- --}}
+                <li>
+                    <a href="{{ route('users.index') }}"
+                        class="group flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium
                       hover:bg-graydark dark:hover:bg-meta-4
                       {{ request()->routeIs('users.*') ? 'bg-graydark dark:bg-meta-4' : '' }}">
-                            <i class="fa-solid fa-users-cog"></i> Pengguna
-                        </a>
-                    </li>
+                        <i class="fa-solid fa-users-cog"></i> Pengguna
+                    </a>
+                </li>
                 @endif
 
                 {{-- ========================= MENU KHUSUS USER ========================= --}}
                 @if ($role === 'user')
-                    <li x-data="{ open: {{ request()->routeIs('invitations.*') ? 'true' : 'false' }} }">
-                        <a href="#" @click.prevent="open = !open"
-                            class="group flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium
-                      hover:bg-graydark dark:hover:bg-meta-4"
-                            :class="{ 'bg-graydark dark:bg-meta-4': open }">
-                            <i class="fa-solid fa-envelope"></i>
-                            Undangan Saya
-                            <svg class="ml-auto w-4 transition-transform" :class="{ 'rotate-180': open }"
-                                viewBox="0 0 20 20">
-                                <path fill="currentColor"
-                                    d="M4.41 6.91a1 1 0 0 1 1.18 0L10 11.32l4.41-4.41a1 1 0 1 1 1.18 1.18l-5 5a1 1 0 0 1-1.18 0l-5-5a1 1 0 0 1 0-1.18z" />
-                            </svg>
-                        </a>
-                        <div x-show="open" class="mt-4 pl-6">
-                            <ul class="flex flex-col gap-2.5">
-                                <li>
-                                    <a href="{{ route('invitations.index') }}"
-                                        class="block px-2 py-1
-                                  {{ request()->routeIs('invitations.index') ? 'text-primary' : 'hover:text-white' }}">
-                                        Lihat Undangan
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('invitations.create') }}"
-                                        class="block px-2 py-1
-                                  {{ request()->routeIs('invitations.create') ? 'text-primary' : 'hover:text-white' }}">
-                                        Buat Undangan
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
+
+                <li>
+                    <a href="{{ route('invitations.index') }}"
+                        class="group flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium
+                                {{ request()->routeIs('invitations.index') ? 'bg-graydark dark:bg-meta-4' : 'hover:bg-graydark dark:hover:bg-meta-4' }}">
+                        <i class="fa-solid fa-envelope"></i> Lihat Undangan
+                    </a>
+                </li>
                 @endif
 
                 <!-- UCAPAN & DOA -->
