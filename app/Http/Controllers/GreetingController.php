@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invitation;
-use App\Models\Greeting;
 use Illuminate\Http\Request;
 
 class GreetingController extends Controller

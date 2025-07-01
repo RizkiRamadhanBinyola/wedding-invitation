@@ -1,6 +1,5 @@
 <?php
 
-// app/Models/Greeting.php
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -16,4 +15,3 @@ class Greeting extends Model
         return $this->belongsTo(Invitation::class);
     }
 }
-

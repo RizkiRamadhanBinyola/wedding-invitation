@@ -72,6 +72,7 @@ class Invitation extends Model
     {
         return $this->hasMany(Greeting::class);
     }
+
     public function galleries()
     {
         return $this->hasMany(Gallery::class);

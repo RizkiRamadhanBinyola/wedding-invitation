@@ -9,12 +9,13 @@ class EnsureInvitationIsSetup
 {
     public function handle($request, Closure $next)
     {
-        $user = Auth::user();
+        $user = auth()->user();
 
-        // Cek jika user berperan 'user' dan belum punya undangan
-        if ($user && $user->role === 'user' && !$user->invitations()->exists()) {
-            return redirect()->route('user.invitation.setup')
-                ->with('error', 'Silakan setup undangan terlebih dahulu.');
+        if ($user->role === 'user' && !$user->invitation) {
+            // Jangan redirect jika sudah di halaman setup
+            if (!$request->is('setup-invitation') && !$request->is('setup-invitation/*')) {
+                return redirect()->route('user.invitation.setup');
+            }
         }
 
         return $next($request);
