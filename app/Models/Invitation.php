@@ -77,4 +77,9 @@ class Invitation extends Model
     {
         return $this->hasMany(Gallery::class);
     }
+
+    public function package()
+    {
+        return $this->belongsTo(Package::class);
+    }
 }

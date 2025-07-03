@@ -4,9 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Invitation;
 use App\Models\Theme;
+use App\Models\Package;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Str;
+use Midtrans\Snap;
+use Midtrans\Config;
 
 class InvitationController extends Controller
 {
@@ -53,14 +57,14 @@ class InvitationController extends Controller
     {
         $user = Auth::user();
 
-        // Jika user sudah punya undangan, redirect
         if ($user->invitations()->exists()) {
             return redirect()->route('dashboard')->with('info', 'Undangan sudah pernah dibuat.');
         }
 
-        // Tampilkan semua tema, frontend akan filter berdasarkan paket
         $themes = Theme::all();
-        return view('user.setup-invitation', compact('themes'));
+        $packages = Package::all();
+
+        return view('user.setup-invitation', compact('themes', 'packages'));
     }
 
     /**
@@ -69,49 +73,65 @@ class InvitationController extends Controller
     public function submitSetupForm(Request $request)
     {
         $request->validate([
-            'slug'     => 'required|unique:invitations,slug',
-            'judul'    => 'required|string|max:255',
-            'paket'    => 'required|in:gratis,premium,gold,silver',
+            'slug' => 'required|unique:invitations,slug',
+            'judul' => 'required',
+            'package_id' => 'required|exists:packages,id',
             'theme_id' => 'required|exists:themes,id',
         ]);
 
-        $user = Auth::user();
+        $user = auth()->user();
+        $package = Package::findOrFail($request->package_id);
 
-        // Cek apakah sudah pernah setup
-        if ($user->invitations()->exists()) {
-            return redirect()->route('dashboard')->with('info', 'Setup undangan hanya bisa dilakukan satu kali.');
-        }
-
-        // Validasi tema sesuai paket
-        $theme = Theme::findOrFail($request->theme_id);
-        $isGratis = $request->paket === 'gratis';
-
-        if ($isGratis && $theme->kategori !== 'gratis') {
-            return back()->withErrors(['theme_id' => 'Paket gratis hanya dapat memilih tema gratis.'])->withInput();
-        }
-
-        // Buat undangan baru
-        Invitation::create([
-            'user_id'        => $user->id,
-            'theme_id'       => $theme->id,
-            'slug'           => $request->slug,
-            'nama_pria'      => $request->judul, // ganti sesuai kebutuhan
-            'nama_wanita'    => '',
-            'ortu_pria'      => '',
-            'ortu_wanita'    => '',
-            'anak_ke'        => '',
-            'tanggal'        => now(),
-            'lokasi'         => '',
-            'no_telp'        => '',
-            'email'          => $user->email,
-            'waktu_akad'     => '',
-            'waktu_resepsi'  => '',
-            'no_rekening'    => null,
-            'instagram'      => null,
-            'musik'          => null,
-            'status'         => 'draft',
+        // Simpan undangan
+        $invitation = Invitation::create([
+            'user_id'     => $user->id,
+            'slug'        => $request->slug,
+            'nama_pria'   => $request->judul,
+            'theme_id'    => $request->theme_id,
+            'package_id'  => $package->id,
+            'status'      => Invitation::STATUS_DRAFT,
         ]);
 
-        return redirect()->route('dashboard')->with('success', 'Undangan berhasil dibuat.');
+        // Jika paket gratis, langsung arahkan ke kelola
+        if ($package->price <= 0) {
+            return redirect()->route('invitations.kelola', $invitation->id)
+                ->with('success', 'Undangan berhasil dibuat!');
+        }
+
+        // Paket berbayar -> simpan transaksi
+        $orderId = 'INV-' . strtoupper(Str::random(10));
+
+        $transaction = Transaction::create([
+            'user_id'           => $user->id,
+            'invitation_id'     => $invitation->id,
+            'order_id'          => $orderId,
+            'gross_amount'      => $package->price,
+            'transaction_status'=> 'pending',
+        ]);
+
+        // Konfigurasi Midtrans
+        Config::$serverKey    = config('midtrans.serverKey');
+        Config::$isProduction = config('midtrans.isProduction');
+        Config::$isSanitized  = config('midtrans.isSanitized');
+        Config::$is3ds        = config('midtrans.is3ds');
+
+        // Parameter Midtrans Snap
+        $params = [
+            'transaction_details' => [
+                'order_id'     => $orderId,
+                'gross_amount' => $package->price,
+            ],
+            'customer_details' => [
+                'first_name' => $user->name,
+                'email'      => $user->email,
+            ],
+            'callbacks' => [
+                'finish' => route('payment.callback'),
+            ]
+        ];
+
+        $snapToken = Snap::getSnapToken($params);
+
+        return view('payment.redirect', compact('snapToken'));
     }
 }

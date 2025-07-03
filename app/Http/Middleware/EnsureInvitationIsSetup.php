@@ -11,8 +11,8 @@ class EnsureInvitationIsSetup
     {
         $user = auth()->user();
 
-        if ($user->role === 'user' && !$user->invitation) {
-            // Jangan redirect jika sudah di halaman setup
+        // ✅ Ganti $user->invitation menjadi $user->invitations()->exists()
+        if ($user->role === 'user' && !$user->invitations()->exists()) {
             if (!$request->is('setup-invitation') && !$request->is('setup-invitation/*')) {
                 return redirect()->route('user.invitation.setup');
             }

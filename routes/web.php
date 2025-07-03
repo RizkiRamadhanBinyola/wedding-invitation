@@ -11,18 +11,13 @@ use App\Http\Controllers\UnifiedInvitationController;
 use App\Http\Controllers\InvitationSectionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\GreetingController;
+use App\Http\Controllers\PaymentController;
 
 /* ========================== LANDING ========================== */
 Route::get('/', fn () => view('welcome'));
 
 /* ======================== AUTH ROUTES ======================== */
 require __DIR__.'/auth.php';
-
-/* ======================== SETUP UNDANGAN USER ================= */
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get ('/setup-invitation', [InvitationController::class, 'showSetupForm'])   ->name('user.invitation.setup');
-    Route::post('/setup-invitation', [InvitationController::class, 'submitSetupForm']) ->name('user.invitation.setup.submit');
-});
 
 /* ========================== ADMIN ============================ */
 Route::middleware(['auth', 'verified', 'admin'])->group(function () {
@@ -34,9 +29,16 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::get('/invitations/create', [UnifiedInvitationController::class, 'create'])->name('invitations.create');
 });
 
-/* ======================== USER ROUTES ======================== */
-Route::middleware(['auth', 'verified', 'ensure.invitation.setup'])->group(function () {
+/* ======================== SETUP UNDANGAN USER ================= */
+// 🟢 Ini hanya pakai auth dan verified — JANGAN pakai ensure.invitation.setup
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get ('/setup-invitation', [InvitationController::class, 'showSetupForm'])->name('user.invitation.setup');
+    Route::post('/setup-invitation', [InvitationController::class, 'submitSetupForm'])->name('user.invitation.setup.submit');
+});
 
+/* ======================== USER ROUTES ======================== */
+// 🟡 Ini hanya untuk user yang sudah punya undangan
+Route::middleware(['auth', 'verified', 'ensure.invitation.setup'])->group(function () {
     // DASHBOARD
     Route::get('/dashboard', function () {
         return Auth::user()->role === 'admin'
@@ -78,6 +80,11 @@ Route::middleware(['auth', 'verified', 'ensure.invitation.setup'])->group(functi
     // PREVIEW LOGIN USER
     Route::get('/invitation/{slug}', [ThemePreviewController::class, 'previewUser'])->name('invitation.preview');
 });
+
+Route::post('/payment/callback', [App\Http\Controllers\PaymentController::class, 'handle'])->name('payment.callback');
+Route::view('/payment/success', 'payment.success')->name('payment.success');
+Route::view('/payment/pending', 'payment.pending')->name('payment.pending');
+
 
 /* ============== FORM UCAPAN TAMU (PUBLIK) ==================== */
 Route::post('/{slug}/greetings', [GreetingController::class, 'storePublic'])

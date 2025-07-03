@@ -55,14 +55,19 @@
                     </div>
 
                     <!-- Paket Undangan -->
+                    <!-- Paket Undangan -->
                     <div class="mb-4">
-                        <label for="paket" class="block text-sm font-medium text-gray-700 dark:text-white">Paket Undangan</label>
-                        <select name="paket" id="paket" required
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                            <option value="gratis">Gratis</option>
-                            <option value="premium">Premium</option>
+                        <label for="package_id" class="block text-sm font-medium text-gray-700 dark:text-white">Paket Undangan</label>
+                        <select name="package_id" id="package_id" required
+                            class="mt-1 block w-full rounded-md ...">
+                            @foreach ($packages as $package)
+                            <option value="{{ $package->id }}">
+                                {{ $package->name }} - Rp{{ number_format($package->price) }}
+                            </option>
+                            @endforeach
                         </select>
                     </div>
+
 
                     <!-- Pilih Tema -->
                     <div class="mb-4">
@@ -74,10 +79,6 @@
                             @endforeach
                         </select>
                     </div>
-
-
-
-
 
                     <div class="mt-6">
                         <button type="submit"

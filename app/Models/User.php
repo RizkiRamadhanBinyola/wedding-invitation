@@ -47,7 +47,7 @@ class User extends Authenticatable
         return $this->role === self::ROLE_ADMIN;
     }
 
-    public function invitations(): HasMany
+    public function invitations()
     {
         return $this->hasMany(Invitation::class);
     }
